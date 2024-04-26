@@ -1,4 +1,4 @@
-package org.example.mcolomerc.kstreams;
+package org.example.mcolomerc.kstreams.test;
 
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;

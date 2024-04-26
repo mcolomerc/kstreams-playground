@@ -1,4 +1,4 @@
-package org.example.mcolomerc.kstreams;
+package org.example.mcolomerc.kstreams.test;
 
 import java.io.FileInputStream;
 import java.util.Properties;
