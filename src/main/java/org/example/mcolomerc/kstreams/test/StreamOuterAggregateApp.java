@@ -84,7 +84,7 @@ public class StreamOuterAggregateApp  {
                     String right = rightValue != null ? rightValue : "null";
                     return "left :: " + left + ", right :: " + right;
                 },
-                JoinWindows.of(Duration.ofSeconds(2)), // window size
+                JoinWindows.of(Duration.ofSeconds(1)), // window size
                 StreamJoined.with(Serdes.String(), Serdes.String(), Serdes.String()));
 
         // Group by key and reduce to keep only the last event within each window

@@ -84,10 +84,6 @@ public class Producer {
                     }
                 }
             });
-            Random random = new Random();
-            long wait = random.nextInt(10 + 1 - 1) + 1;
-            logger.info("wait(ms): " + wait);
-            Thread.sleep(wait);
         } catch (Exception e) {
             System.out.println (e.getMessage());
             e.printStackTrace();
