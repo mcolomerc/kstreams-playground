@@ -11,7 +11,7 @@ import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StreamApp {
+public abstract class StreamApp {
     private static Logger logger = LoggerFactory.getLogger(StreamApp.class.getName());
     protected Properties properties;
     protected KafkaStreams kafkaStreams;
@@ -25,7 +25,7 @@ public class StreamApp {
         if (args.length > 0) {
             properties.load(new FileInputStream(args[0]));
         } else {
-            properties.load(new StreamApp().getClass().getResourceAsStream("/kafka.properties"));
+            properties.load(this.getClass().getResourceAsStream("/confluent.properties"));
         }
 
         if (extraProperties != null) {

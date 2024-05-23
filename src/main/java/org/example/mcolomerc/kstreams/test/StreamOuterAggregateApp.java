@@ -16,29 +16,34 @@ import static org.apache.kafka.streams.kstream.Suppressed.BufferConfig.unbounded
 
 
 public class StreamOuterAggregateApp extends StreamApp {
-
-    static Logger logger = LoggerFactory.getLogger(StreamOuterAggregateApp.class.getName());
-
+    private static Logger logger =  LoggerFactory.getLogger(StreamOuterAggregateApp.class.getName());
     public static final String LEFT_TOPIC  = "left-topic";
     public static final String RIGHT_TOPIC  = "right-topic";
     public static final String OUT_TOPIC  = "left-right-topic";
 
     public static void main(String[] args) throws Exception {
+        logger.info ("Starting Stream App...");
         Properties extraProperties = new Properties();
         try {
+            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "info");
             StreamOuterJoinerApp streamApp = new StreamOuterJoinerApp();
             extraProperties.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
                     CreatedAtTimestampExtractor.class.getName());
+            // Default serde for keys of data records (here: built-in serde for String type)
+            extraProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+            // Default serde for values of data records (here: built-in serde for Long type)
+            extraProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
             extraProperties.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, "outer-joiner-app");
             streamApp.run(args, extraProperties);
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error(e.getMessage());
         }
 
     }
 
     @Override
     public void buildTopology(StreamsBuilder builder) throws ExecutionException, InterruptedException {
+        logger.info ("Building topology...");
         KStream<String, String> leftStream = builder.stream(LEFT_TOPIC,
                 Consumed.with(Serdes.String(), Serdes.String())
                         .withName("left-store"));
@@ -50,9 +55,7 @@ public class StreamOuterAggregateApp extends StreamApp {
         Produced<String, String> outPut = Produced
                 .with(Serdes.String(), Serdes.String());
 
-        TimeWindows windows = TimeWindows
-                .ofSizeAndGrace(Duration.ofSeconds(1), Duration.ofMillis(100))
-                .advanceBy(Duration.ofSeconds(1));
+        TimeWindows windows = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(1)).advanceBy(Duration.ofSeconds(1));
 
         // Perform the outer join
         KStream<String, String> joinedStream = leftStream.outerJoin(
@@ -76,10 +79,9 @@ public class StreamOuterAggregateApp extends StreamApp {
                 .suppress(Suppressed.untilWindowCloses(unbounded()))// Until Window Closes
                 .toStream()// Stream
                 .map((windowKey, value) -> KeyValue.pair(windowKey.key(),value))//KeyValue
-                .peek((key, value) -> System.out.println(String.format("Outgoing record key:[%s] value:[%s]", key, value)))
-        // Write the filtered result to a Kafka topic
+                .peek((key, value) -> logger.info("Outgoing record key: {} value: {} ", key, value))
+                 // Write the filtered result to a Kafka topic
                 .to(OUT_TOPIC, outPut); // toTopic
 
     }
-
 }

@@ -61,10 +61,12 @@ public class TestOuterAggregateApp {
 
     @Test
     public void shouldOuterJoin() {
-        try (final TopologyTestDriver topologyTestDriver = new TopologyTestDriver(builder.build(), getConfig(), Instant.ofEpochMilli(1L))) {
+        try {
+            final TopologyTestDriver topologyTestDriver = new TopologyTestDriver(builder.build(), getConfig(), Instant.ofEpochMilli(1L));
             // window
             leftTopic.pipeInput(new TestRecord("1", "left 1", null, Instant.ofEpochMilli(1L).plusMillis(800L)));
             rightTopic.pipeInput(new TestRecord("1", "right 1", null, Instant.ofEpochMilli(1L).plusMillis(900L)));
+
             //window
             rightTopic.pipeInput(new TestRecord("1", "right 2", null, Instant.ofEpochMilli(1L).plusMillis(2500L)));
             //window
@@ -77,6 +79,7 @@ public class TestOuterAggregateApp {
             // window
             rightTopic.pipeInput(new TestRecord("1", "right 5", null, Instant.ofEpochMilli(1L).plusMillis(7000L)));
             rightTopic.pipeInput(new TestRecord("1", "right 5", null, Instant.ofEpochMilli(1L).plusMillis(7600L)));
+
            //window
             leftTopic.pipeInput(new TestRecord("1", "left 6", null, Instant.ofEpochMilli(1L).plusMillis(9000L)));
             leftTopic.pipeInput(new TestRecord("1", "left 6", null, Instant.ofEpochMilli(1L).plusMillis(9800L)));
