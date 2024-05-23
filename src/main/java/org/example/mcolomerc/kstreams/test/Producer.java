@@ -45,16 +45,16 @@ public class Producer {
             //---
             produceRecord (producer, LEFT_TOPIC, String.valueOf(i), "LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
             i= i +1; // 2
-            Thread.sleep(1000L);
+            Thread.sleep(2000L);
             //---
             produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), "RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
             produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), "RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
             i= i +1;   // 3
-            Thread.sleep(1000L);
+            Thread.sleep(2000L);
             //---
             produceRecord (producer, LEFT_TOPIC, String.valueOf(i), "LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
             i= i +1;   // 4
-            Thread.sleep(1000L);
+            Thread.sleep(6000L);
             //---
             produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), "RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
             produceRecord (producer, LEFT_TOPIC, String.valueOf(i), "LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
@@ -85,7 +85,7 @@ public class Producer {
                 }
             });
             Random random = new Random();
-            long wait = random.nextInt(100 + 1 - 1) + 1;
+            long wait = random.nextInt(10 + 1 - 1) + 1;
             logger.info("wait(ms): " + wait);
             Thread.sleep(wait);
         } catch (Exception e) {
