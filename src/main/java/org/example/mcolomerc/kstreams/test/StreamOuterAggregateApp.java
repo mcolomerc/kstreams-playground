@@ -74,7 +74,7 @@ public class StreamOuterAggregateApp  {
         Produced<String, String> outPut = Produced
                 .with(Serdes.String(), Serdes.String());
 
-        TimeWindows windows = TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(2)).advanceBy(Duration.ofSeconds(2));
+        TimeWindows windows = TimeWindows.ofSizeWithNoGrace(Duration.ofMillis(1000L)).advanceBy(Duration.ofMillis(1000L));
 
         // Perform the outer join
         KStream<String, String> joinedStream = leftStream.outerJoin(

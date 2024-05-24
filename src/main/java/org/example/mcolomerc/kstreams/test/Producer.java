@@ -5,8 +5,8 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +16,7 @@ import java.util.Properties;
 import java.util.Random;
 
 public class Producer {
-    private static Logger logger = LogManager.getLogger(Producer.class);
+    private static Logger logger = LoggerFactory.getLogger(Producer.class);
     public static final String LEFT_TOPIC  = "left-topic";
     public static final String RIGHT_TOPIC  = "right-topic";
     private static final Properties props = new Properties();
@@ -36,28 +36,33 @@ public class Producer {
         logger.info("Producer started");
 
         try (KafkaProducer<String, String> producer = new KafkaProducer<String, String>(props)) {
-            int i = 100;
+            int i = 200;
+            Timestamp it = Timestamp.from(Instant.now());
             // 0
-            produceRecord (producer, LEFT_TOPIC, String.valueOf(i), "LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
-            produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), "RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
-            i= i +1; // 1
+              produceRecord (producer, LEFT_TOPIC, String.valueOf(i), it + "- LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+              produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), it + "- RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+
+              Thread.sleep(6000L);
+              produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), it + "- RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+
+           /* i= i +1; // 1
             Thread.sleep(1000L);
             //---
-            produceRecord (producer, LEFT_TOPIC, String.valueOf(i), "LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+              produceRecord (producer, LEFT_TOPIC, String.valueOf(i), it + "- LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
             i= i +1; // 2
             Thread.sleep(2000L);
             //---
-            produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), "RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
-            produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), "RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
-            i= i +1;   // 3
+              produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), it + "- RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+              produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), it + "- RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+              i= i +1;   // 3
             Thread.sleep(2000L);
             //---
-            produceRecord (producer, LEFT_TOPIC, String.valueOf(i), "LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+            produceRecord (producer, LEFT_TOPIC, String.valueOf(i), it + "- LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
             i= i +1;   // 4
             Thread.sleep(6000L);
             //---
-            produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), "RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
-            produceRecord (producer, LEFT_TOPIC, String.valueOf(i), "LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+            produceRecord (producer, RIGHT_TOPIC, String.valueOf(i), it + "- RIGHT " + Long.toString(i) + " - " + Timestamp.from(Instant.now()));
+            produceRecord (producer, LEFT_TOPIC, String.valueOf(i), it + "- LEFT " + Long.toString(i) + " - " + Timestamp.from(Instant.now())); */
 
             producer.flush();
             logger.info(String.format("Successfully produced messages to topics called :: %s | %s", LEFT_TOPIC, RIGHT_TOPIC));

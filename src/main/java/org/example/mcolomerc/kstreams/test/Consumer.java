@@ -3,8 +3,9 @@ package org.example.mcolomerc.kstreams.test;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.Properties;
 
 public class Consumer {
-    private static Logger logger = LogManager.getLogger(Consumer.class);
+    private static Logger logger =  LoggerFactory.getLogger(Consumer.class);
     private static final String TOPIC = "left-right-topic";
     private static final Properties props = new Properties();
 
@@ -28,7 +29,7 @@ public class Consumer {
         }
 
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "info");
-        logger.debug("Producer started");
+        logger.debug("Consumer started");
         try (final KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props)) {
             consumer.subscribe(Arrays.asList(TOPIC));
             while (true) {
